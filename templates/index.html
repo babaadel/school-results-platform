@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة نتائج الطلاب</title>
+    <style>
+        /* --- تنسيقات CSS --- */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--primary-color);
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 0.5rem; color: var(--primary-color); }
+        .stats { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 2rem; }
+
+        .search-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus { border-color: var(--accent-color); }
+
+        button {
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover { background-color: #2980b9; }
+
+        /* بطاقة النتيجة */
+        .result-card {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background-color: #ebf5fb;
+            border-right: 5px solid var(--accent-color);
+            text-align: right;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .result-item {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .label { font-weight: bold; color: #555; }
+        .value { color: var(--primary-color); }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            background-color: var(--success-color);
+        }
+
+        .error-msg { color: #e74c3c; margin-top: 15px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>بوابة النتائج الرقمية</h1>
+    <p class="stats">إجمالي النتائج المرفوعة: <b>{{ count }}</b></p>
+
+    <form class="search-box" action="/search" method="post">
+        <input type="text" name="student_id" placeholder="أدخل رقمك المدرسي هنا..." required>
+        <button type="submit">استعلام عن النتيجة</button>
+    </form>
+
+    {% if student %}
+        <div class="result-card">
+            <div class="result-item">
+                <span class="label">اسم الطالب:</span>
+                <span class="value">{{ student.name }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">المعدل:</span>
+                <span class="value" style="font-weight: bold; color: var(--accent-color);">{{ student.grade }}</span>
+            </div>
+            <div class="result-item">
+                <span class="label">الحالة:</span>
+                <span class="status-badge">{{ student.status }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+            <p class="error-msg">⚠️ {{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
+</body>
+</html>
+
